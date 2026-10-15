@@ -1,0 +1,164 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KineticFit: Ergonomic Workspace & Posture Interval Coach</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="brand">
+            <div class="logo-icon"></div>
+            <h1>Kinetic<span>Fit</span></h1>
+        </div>
+        <p class="tagline">Optimize your workstation, protect your posture, and move mindfully throughout the day.</p>
+    </header>
+
+    <main class="main-container">
+        <!-- Navigation Tabs -->
+        <nav class="tab-nav" role="tablist">
+            <button class="tab-btn active" data-tab="ergonomics" role="tab" aria-selected="true">Ergonomic Calculator</button>
+            <button class="tab-btn" data-tab="coach" role="tab" aria-selected="false">Posture & Break Coach</button>
+            <button class="tab-btn" data-tab="library" role="tab" aria-selected="false">Desk Stretch Library</button>
+        </nav>
+
+        <!-- Tab 1: Ergonomic Calculator -->
+        <section id="ergonomics" class="tab-content active" role="tabpanel">
+            <div class="grid-2col">
+                <div class="card input-card">
+                    <h2>Workstation Measurements</h2>
+                    <p class="card-desc">Enter your current setup dimensions in centimeters to evaluate your posture risk.</p>
+                    
+                    <div class="input-group">
+                        <label for="userHeight">Your Height <span id="valUserHeight">175</span> cm</label>
+                        <input type="range" id="userHeight" min="140" max="210" value="175">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="deskHeight">Desk Height <span id="valDeskHeight">74</span> cm</label>
+                        <input type="range" id="deskHeight" min="60" max="100" value="74">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="chairHeight">Seat Height <span id="valChairHeight">45</span> cm</label>
+                        <input type="range" id="chairHeight" min="35" max="60" value="45">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="monitorDist">Monitor Distance <span id="valMonitorDist">60</span> cm</label>
+                        <input type="range" id="monitorDist" min="40" max="100" value="60">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="screenHeight">Monitor Top Alignment</label>
+                        <select id="screenHeight">
+                            <option value="low">Significantly below eye level (Neck flexed down)</option>
+                            <option value="ideal" selected>At or slightly below eye level (Ideal)</option>
+                            <option value="high">Above eye level (Neck tilted up)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card result-card">
+                    <h2>Ergonomic Health Score</h2>
+                    <div class="score-display">
+                        <div class="score-ring">
+                            <span id="scoreValue">85</span>
+                            <small>/100</small>
+                        </div>
+                        <div class="score-label" id="scoreStatus">Good Alignment</div>
+                    </div>
+
+                    <div class="feedback-list" id="ergonomicFeedback">
+                        <!-- Dynamically populated feedback -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: Posture & Break Coach -->
+        <section id="coach" class="tab-content" role="tabpanel">
+            <div class="coach-container">
+                <div class="card timer-card">
+                    <div class="timer-header">
+                        <h2 id="timerModeTitle">Focus Session</h2>
+                        <div class="timer-badge" id="timerBadge">Work</div>
+                    </div>
+
+                    <div class="timer-display">
+                        <svg class="progress-ring" width="260" height="260">
+                            <circle class="progress-ring__circle-bg" cx="130" cy="130" r="115"></circle>
+                            <circle class="progress-ring__circle" cx="130" cy="130" r="115" id="timerProgress"></circle>
+                        </svg>
+                        <div class="time-remaining" id="timeDisplay">25:00</div>
+                    </div>
+
+                    <div class="timer-controls">
+                        <button id="startTimerBtn" class="btn btn-primary">Start Focus</button>
+                        <button id="skipTimerBtn" class="btn btn-secondary">Skip / Next</button>
+                        <button id="resetTimerBtn" class="btn btn-text">Reset</button>
+                    </div>
+
+                    <div class="sound-toggle-wrap">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span>Play gentle chime on interval completion</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card active-break-card">
+                    <h2>Active Break Guidance</h2>
+                    <div id="breakGuidanceContent" class="break-content-box">
+                        <div class="placeholder-state">
+                            <div class="pulse-icon"></div>
+                            <p>Focus timer is running. When the break arrives, guided exercises will appear here automatically!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: Desk Stretch Library -->
+        <section id="library" class="tab-content" role="tabpanel">
+            <div class="library-header">
+                <h2>Quick Desk Stretches & Posture Resets</h2>
+                <p>Perform these 1-minute mobility breaks without leaving your workstation.</p>
+            </div>
+
+            <div class="stretch-grid" id="stretchGrid">
+                <!-- Populated via script -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Stretch Detail Modal -->
+    <div class="modal-backdrop" id="stretchModal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true">
+            <button class="modal-close" id="closeModalBtn">&times;</button>
+            <h3 id="modalTitle">Stretch Title</h3>
+            <div class="modal-body">
+                <div class="modal-anim-container" id="modalAnimContainer">
+                    <!-- Visual animated stick figure or guide -->
+                    <div class="stick-figure-box" id="stickFigureBox"></div>
+                </div>
+                <div class="modal-instructions">
+                    <h4>Instructions:</h4>
+                    <ol id="modalSteps"></ol>
+                    <div class="timer-countdown-box">
+                        <span id="stretchTimerVal">30</span>s remaining
+                        <button id="startStretchTimerBtn" class="btn btn-small btn-primary">Start Timer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>KineticFit &bull; Designed for healthy remote work. All calculations performed locally in your browser.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
